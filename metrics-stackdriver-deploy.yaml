@@ -1,0 +1,47 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+    name: metrics-stackdriver
+spec:
+    selector:
+        matchLabels:
+            app: metrics-stackdriver
+    replicas: 1
+    template:
+        metadata:
+            labels:
+                app: metrics-stackdriver
+        spec:
+            containers:
+            -   name: metrics-stackdriver
+                image: us.gcr.io/xumo-ovp-ng/metrics-stackdriver:1.0-SNAPSHOT
+                imagePullPolicy: Always
+                resources:
+                    limits:
+                        memory: 512Mi
+                        cpu: 200m
+                    requests:
+                        memory: 512Mi
+                        cpu: 100m
+                env:
+                - name: PROJECT_ID
+                  value: xumo-ovp-ng
+                - name: LOCATION
+                  value: us-central1-a
+                - name: CLUSTER_NAME
+                  value: microservices-dev-sep2020
+                #- name: POD_ID
+                #  valueFrom:
+                #      fieldRef:
+                #          apiVersion: v1
+                #          fieldPath: metadata.uid
+                - name: POD_NAME
+                  valueFrom:
+                      fieldRef:
+                          apiVersion: v1
+                          fieldPath: metadata.name
+                - name: POD_NS
+                  valueFrom:
+                      fieldRef:
+                          apiVersion: v1
+                          fieldPath: metadata.namespace
